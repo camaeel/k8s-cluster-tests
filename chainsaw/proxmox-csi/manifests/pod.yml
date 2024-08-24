@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test
+  labels:
+    app: test-proxmox-csi
+spec:
+  containers:
+    - name: alpine
+      image: alpine
+      command: ["sleep","3000"]
+      volumeMounts:
+        - name: pvc
+          mountPath: /mnt
+      securityContext:
+        runAsUser: 1000
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        seccompProfile:
+          type: RuntimeDefault
+        runAsNonRoot: true
+  terminationGracePeriodSeconds: 1
+  volumes:
+    - name: pvc
+      ephemeral:
+        volumeClaimTemplate:
+          metadata:
+            labels:
+              type: pvc-volume
+          spec:
+            accessModes: [ "ReadWriteOnce" ]
+            storageClassName: proxmox-data-ephemeral
+            resources:
+              requests:
+                storage: 1Gi
