@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     # The type of runner that the job will run on
-    name: Install Chainsaw
+    name: Lint chainsaw config
     steps:
       - name: Install Chainsaw
         uses: kyverno/action-install-chainsaw@v0.2.9
