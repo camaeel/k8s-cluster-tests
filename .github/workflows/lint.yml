@@ -24,8 +24,8 @@ jobs:
         uses: kyverno/action-install-chainsaw@v0.2.9
       - name: Check install
         run: chainsaw version
-      - name: debug
-        run: find .
+      - name: checkout code
+        uses: actions/checkout@v4
       - name: lint config
         run: chainsaw lint configuration -f chainsaw/config.yaml
       - name: lint tests
