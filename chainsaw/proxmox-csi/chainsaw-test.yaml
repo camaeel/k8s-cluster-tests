@@ -4,11 +4,24 @@ kind: Test
 metadata:
   name: proxmox-csi
 spec:
+  timeouts:
+    exec: 30s
+    apply: 30s
+    delete: 1m
+  namespaceTemplate:
+    metadata:
+      labels:
+        chainsaw-test: ($values.test_name)
+  bindings:
+    - name: test_name
+      value: proxmox-csi
   steps:
     - try:
         - apply:
             file: manifests/*
+
         - assert:
+            timeout: 2m
             resource:
               apiVersion: v1
               kind: Pod
@@ -17,3 +30,13 @@ spec:
                   app: test-proxmox-csi
               status:
                 phase: Running
+  catch:
+    - get:
+        kind: Pod
+        apiVersion: v1
+    - get:
+        kind: PersistentVolumeClaim
+        apiVersion: v1
+    - get:
+        kind: PersistentVolume
+        apiVersion: v1
