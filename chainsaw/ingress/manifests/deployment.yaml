@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ingress-test
+  name: ingress-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ingress-test
+  template:
+    metadata:
+      labels:
+        app: ingress-test
+    spec:
+      containers:
+        - name: nignx
+#          image: nginx
+          image: bitnami/nginx:latest
+          ports:
+            - containerPort: 8080
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+#          volumeMounts:
+#            - mountPath: /var/cache/nginx/client_temp
+#              name: client-temp
+#            - mountPath: /var/cache/nginx/proxy_temp
+#              name: proxy-temp
+#            - mountPath: /var/cache/nginx/fastcgi_temp
+#              name: fastcgi-temp
+#            - mountPath: /var/cache/nginx/uwsgi_temp
+#              name: uwsgi-temp
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      automountServiceAccountToken: false
+#      volumes:
+#        - name: client-temp
+#          emptyDir: {}
+#        - name: proxy-temp
+#          emptyDir: {}
+#        - name: fastcgi-temp
+#          emptyDir: {}
+#        - name: uwsgi-temp
+#          emptyDir: {}
+
