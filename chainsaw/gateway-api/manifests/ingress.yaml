@@ -1,0 +1,18 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: gateway-api-test
+spec:
+  hostnames:
+    - ($ingress_host_name)
+  parentRefs:
+    - name: ($values.gatewayApiTest.gatewayName)
+      namespace: ($values.gatewayApiTest.gatewayNamespace)
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: "/"
+      backendRefs:
+        - name: gateway-api-test
+          port: 8080

@@ -1,0 +1,77 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/chainsaw/main/.schemas/json/test-chainsaw-v1alpha1.json
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: gateway-api
+spec:
+  timeouts:
+    exec: 30s
+    apply: 30s
+    delete: 1m
+  namespaceTemplate:
+    metadata:
+      labels:
+        chainsaw-test: ($values.test_name)
+  bindings:
+    - name: test_name
+      value: gateway-api
+    - name: ingress_host_name
+      value: (join('.',[$namespace, env('BASE_DOMAIN')]))
+  steps:
+    - try:
+        - apply:
+            file: manifests/*
+        - assert:
+            timeout: 2m
+            resource:
+              apiVersion: v1
+              kind: Pod
+              metadata:
+                labels:
+                  app: gateway-api-test
+              status:
+                phase: Running
+        - assert:
+            timeout: 1m
+            resource:
+              apiVersion: gateway.networking.k8s.io/v1beta1
+              kind: HTTPRoute
+              metadata:
+                name: gateway-api-test
+              status:
+                parents:
+                  - conditions:
+                      - status: "True"
+                        type: Accepted
+                      - status: "True"
+                        type: ResolvedRefs
+                      - status: "True"
+                        type: Programmed
+
+        - script:
+            timeout: 3m
+            env:
+              - name: DOMAIN
+                value: ($ingress_host_name)
+            content: |
+              RETURN=1
+              while true; do
+                if curl "https://${DOMAIN}" -f -o /dev/null -w "%{http_code}" ; then
+                  exit 0
+                else 
+                  sleep 5
+                fi
+              done
+
+  catch:
+    - get:
+        kind: Pod
+        apiVersion: v1
+    - get:
+        kind: Deployment
+        apiVersion: apps/v1
+    - get:
+        kind: HTTPRoute
+        apiVersion: gateway.networking.k8s.io/v1beta1
+    - events: {}
+
