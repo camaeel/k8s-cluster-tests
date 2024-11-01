@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: ($issuer_name)
+  labels:
+    chainsaw-test: ($values.test_name)
+spec:
+  acme:
+    email: kamil-chainsaw-test@gmail.com
+    privateKeySecretRef:
+      name: ($issuer_name)
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    solvers:
+      - dns01:
+          cloudflare:
+            apiTokenSecretRef: ($values.certManagerTest.apiTokenSecretRef)
+

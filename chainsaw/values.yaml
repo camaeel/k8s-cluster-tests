@@ -1,3 +1,7 @@
 gatewayApiTest:
   gatewayName: kong
   gatewayNamespace: kong
+certManagerTest:
+  apiTokenSecretRef:
+    key: api-token
+    name: cloudflare-api-token-secret
