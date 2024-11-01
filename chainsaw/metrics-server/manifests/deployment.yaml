@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: metrics-server-test
+  name: metrics-server-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metrics-server-test
+  template:
+    metadata:
+      labels:
+        app: metrics-server-test
+    spec:
+      containers:
+        - name: nignx
+          image: bitnami/nginx:latest
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      automountServiceAccountToken: false
+

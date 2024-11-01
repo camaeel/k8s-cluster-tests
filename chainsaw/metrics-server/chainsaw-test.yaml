@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/chainsaw/main/.schemas/json/test-chainsaw-v1alpha1.json
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: metrics-server
+spec:
+  timeouts:
+    exec: 30s
+    apply: 30s
+    delete: 1m
+  namespaceTemplate:
+    metadata:
+      labels:
+        chainsaw-test: ($values.test_name)
+  bindings:
+    - name: test_name
+      value: metrics-server
+  steps:
+    - try:
+        - apply:
+            file: manifests/*
+        - assert:
+            timeout: 2m
+            resource:
+              apiVersion: v1
+              kind: Pod
+              metadata:
+                labels:
+                  app: metrics-server-test
+              status:
+                phase: Running
+        - description: Wait for metrics to be collected
+          wait:
+            apiVersion: metrics.k8s.io/v1beta1
+            kind: NodeMetrics
+            for:
+              jsonPath:
+                path: usage.cpu
+        - description: wait for pod metrics
+          assert:
+            timeout: 2m
+            resource:
+              kind: PodMetrics
+              apiVersion: metrics.k8s.io/v1beta1
+              metadata:
+                labels:
+                  app: metrics-server-test
+              containers:
+                - name: nignx
+        - script:
+            timeout: 1m
+            content: |
+              set -ex
+              kubectl top node 
+              kubectl top pod -l app=metrics-server-test
+
+  catch:
+    - get:
+        kind: Pod
+        apiVersion: v1
+    - get:
+        kind: Deployment
+        apiVersion: apps/v1
+    - events: {}
+    - podLogs:
+        namespace: kube-system
+        selector: app.kubernetes.io/name=metrics-server
