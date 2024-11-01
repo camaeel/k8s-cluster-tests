@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: coredns-check-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: dig
+          image: toolbelt/dig
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -ex
+              dig +short @kube-dns.kube-system.svc.cluster.local google.com
+              dig +short @kube-dns.kube-system.svc.cluster.local kubernetes.default
+              dig +short @kube-dns.kube-system.svc.cluster.local kubernetes.default.svc
+              dig +short @kube-dns.kube-system.svc.cluster.local kubernetes.default.svc.cluster.local
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      automountServiceAccountToken: false
+      restartPolicy: OnFailure

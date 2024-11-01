@@ -28,26 +28,8 @@ spec:
             capabilities:
               drop:
                 - ALL
-#          volumeMounts:
-#            - mountPath: /var/cache/nginx/client_temp
-#              name: client-temp
-#            - mountPath: /var/cache/nginx/proxy_temp
-#              name: proxy-temp
-#            - mountPath: /var/cache/nginx/fastcgi_temp
-#              name: fastcgi-temp
-#            - mountPath: /var/cache/nginx/uwsgi_temp
-#              name: uwsgi-temp
       securityContext:
         seccompProfile:
           type: RuntimeDefault
       automountServiceAccountToken: false
-#      volumes:
-#        - name: client-temp
-#          emptyDir: {}
-#        - name: proxy-temp
-#          emptyDir: {}
-#        - name: fastcgi-temp
-#          emptyDir: {}
-#        - name: uwsgi-temp
-#          emptyDir: {}
 
