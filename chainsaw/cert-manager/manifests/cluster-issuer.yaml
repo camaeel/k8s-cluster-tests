@@ -6,7 +6,7 @@ metadata:
     chainsaw-test: ($values.test_name)
 spec:
   acme:
-    email: (join('', ['kamil-chainsaw-test+',$namespace,'@gmail.com']))
+    email: (join('', ['kamil-chainsaw-test+',$namespace,'-',random('[0-9a-z]{10}'),'@gmail.com']))
     privateKeySecretRef:
       name: ($issuer_name)
     server: https://acme-staging-v02.api.letsencrypt.org/directory
