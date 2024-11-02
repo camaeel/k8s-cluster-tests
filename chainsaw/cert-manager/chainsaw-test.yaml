@@ -4,6 +4,8 @@ kind: Test
 metadata:
   name: cert-manager
 spec:
+  description:
+    Creates cluster issuer and certificate.
   timeouts:
     exec: 30s
     apply: 30s

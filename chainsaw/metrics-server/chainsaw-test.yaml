@@ -4,6 +4,8 @@ kind: Test
 metadata:
   name: metrics-server
 spec:
+  description:
+    Checks if metrics-server is working properly and returns metrics for nodes and pods.
   timeouts:
     exec: 30s
     apply: 30s

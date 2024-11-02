@@ -4,6 +4,8 @@ kind: Test
 metadata:
   name: gateway-api
 spec:
+  description:
+    Checks if Gateway API setup is correct and allows HTTP access
   timeouts:
     exec: 30s
     apply: 30s

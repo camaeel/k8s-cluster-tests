@@ -4,6 +4,8 @@ kind: Test
 metadata:
   name: proxmox-csi
 spec:
+  description:
+    Checks if Proxmox CSI driver works properly. Test creates pod with "temporary" volume.
   timeouts:
     exec: 30s
     apply: 30s
