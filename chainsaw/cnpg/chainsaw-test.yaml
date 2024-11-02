@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/chainsaw/main/.schemas/json/test-chainsaw-v1alpha1.json
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: cnpg
+spec:
+  timeouts:
+    exec: 30s
+    apply: 30s
+    delete: 1m
+  namespaceTemplate:
+    metadata:
+      labels:
+        chainsaw-test: ($values.test_name)
+  bindings:
+    - name: test_name
+      value: cnpg
+  steps:
+    - try:
+        - description: Create DB
+          apply:
+            file: manifests/db.yaml
+        - description: wait for db to be ready
+          wait:
+            timeout: 5m
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+            name: cnpg-test
+            for:
+              condition:
+                name: Ready
+                value: "True"
+        - description: Create test job
+          apply:
+            file: manifests/job.yaml
+        - wait:
+            timeout: 3m
+            apiVersion: batch/v1
+            kind: Job
+            name: cnpg-test
+            for:
+              condition:
+                name: Complete
+                value: "True"
+
+  catch:
+    - get:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+    - get:
+        kind: Pod
+        apiVersion: v1
+    - get:
+        kind: Job
+        apiVersion: batch/v1
+    - events: {}
+    - podLogs:
+        namespace: cnpg-system
+        selector: app.kubernetes.io/name=cloudnative-pg
+        tail: 200

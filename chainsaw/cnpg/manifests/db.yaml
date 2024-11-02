@@ -1,0 +1,25 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cnpg-test
+spec:
+  instances: 2
+  primaryUpdateStrategy: unsupervised
+  storage:
+    size: 1Gi
+    storageClass: proxmox-data-ephemeral
+  managed:
+    roles:
+      - name: dante
+        ensure: present
+        comment: Dante Alighieri
+        login: true
+        superuser: false
+        inRoles:
+          - dante1
+      - name: dante1
+        ensure: present
+        comment: dante1
+        login: true
+        superuser: false
+

@@ -1,0 +1,54 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cnpg-test
+spec:
+  template:
+    spec:
+      containers:
+        - name: cnpg-testtest
+          image: postgres:17
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              set -ex
+              psql -c 'SELECT table_name FROM information_schema.tables'
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          env:
+            - name: PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: cnpg-test-app
+                  key: dbname
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: cnpg-test-app
+                  key: host
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  name: cnpg-test-app
+                  key: port
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: cnpg-test-app
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cnpg-test-app
+                  key: password
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      automountServiceAccountToken: false
+      restartPolicy: OnFailure
+
