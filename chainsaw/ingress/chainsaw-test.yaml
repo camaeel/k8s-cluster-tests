@@ -13,10 +13,8 @@ spec:
   namespaceTemplate:
     metadata:
       labels:
-        chainsaw-test: ($values.test_name)
+        chainsaw-test: ingress
   bindings:
-    - name: test_name
-      value: ingress
     - name: ingress_host_name
       value: (join('.',[$namespace, env('BASE_DOMAIN')]))
   steps:

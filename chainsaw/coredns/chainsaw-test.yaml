@@ -13,10 +13,7 @@ spec:
   namespaceTemplate:
     metadata:
       labels:
-        chainsaw-test: ($values.test_name)
-  bindings:
-    - name: test_name
-      value: coredns
+        chainsaw-test: coredns
   steps:
     - try:
         - apply:

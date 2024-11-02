@@ -13,10 +13,7 @@ spec:
   namespaceTemplate:
     metadata:
       labels:
-        chainsaw-test: ($values.test_name)
-  bindings:
-    - name: test_name
-      value: cnpg
+        chainsaw-test: cnpg
   steps:
     - name: setup DB
       description: creates basic database
