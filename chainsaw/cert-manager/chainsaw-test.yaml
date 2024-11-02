@@ -19,30 +19,17 @@ spec:
       value: ingress
     - name: ingress_host_name
       value: (join('.',[$namespace, env('BASE_DOMAIN')]))
-    - name: issuer_name
-      value: (join('-',['letsencrypt',$namespace]))
   steps:
     - try:
         - apply:
             file: manifests/*
-      cleanup:
-        - delete:
-            ref:
-              apiVersion: cert-manager.io/v1
-              kind: ClusterIssuer
-              name: ($issuer_name)
-        - delete:
-            ref:
-              name: ($issuer_name)
-              apiVersion: v1
-              namespace: cert-manager
-              kind: Secret
+
     - try:
         - wait:
             timeout: 5m
             apiVersion: cert-manager.io/v1
-            kind: ClusterIssuer
-            name: ($issuer_name)
+            kind: Issuer
+            name: cert-manager-test
             for:
               condition:
                 name: Ready
@@ -62,7 +49,7 @@ spec:
         kind: Certificate
         apiVersion: cert-manager.io/v1
     - get:
-        kind: ClusterIssuer
+        kind: Issuer
         apiVersion: cert-manager.io/v1
     - events: {}
     - podLogs:

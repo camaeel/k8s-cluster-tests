@@ -6,8 +6,8 @@ spec:
   commonName: ($ingress_host_name)
   dnsNames:
     - ($ingress_host_name)
-  duration: 2160h0m0s
+  duration: 24h0m0s
   issuerRef:
-    kind: ClusterIssuer
-    name: ($issuer_name)
-  secretName: ($issuer_name)
+    kind: Issuer
+    name: cert-manager-test
+  secretName: cert-manager-test
