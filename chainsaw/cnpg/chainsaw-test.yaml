@@ -4,6 +4,8 @@ kind: Test
 metadata:
   name: cnpg
 spec:
+  description:
+    Tests CNPG operator managed database provisioning.
   timeouts:
     exec: 30s
     apply: 30s
@@ -16,11 +18,13 @@ spec:
     - name: test_name
       value: cnpg
   steps:
-    - try:
+    - name: setup DB
+      description: creates basic database
+      try:
         - description: Create DB
           apply:
             file: manifests/db.yaml
-        - description: wait for db to be ready
+        - description: Wait for db to be ready
           wait:
             timeout: 5m
             apiVersion: postgresql.cnpg.io/v1
@@ -30,10 +34,14 @@ spec:
               condition:
                 name: Ready
                 value: "True"
+    - name: run test job
+      description: Runs a job that queries database for table list
+      try:
         - description: Create test job
           apply:
             file: manifests/job.yaml
-        - wait:
+        - description: Wait for test job to execute query against the DB
+          wait:
             timeout: 3m
             apiVersion: batch/v1
             kind: Job
