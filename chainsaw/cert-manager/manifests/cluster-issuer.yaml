@@ -6,7 +6,7 @@ metadata:
     chainsaw-test: ($values.test_name)
 spec:
   acme:
-    email: kamil-chainsaw-test@gmail.com
+    email: (join('', ['kamil-chainsaw-test+',$namespace,'@gmail.com']))
     privateKeySecretRef:
       name: ($issuer_name)
     server: https://acme-staging-v02.api.letsencrypt.org/directory
