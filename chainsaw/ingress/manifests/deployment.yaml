@@ -17,8 +17,7 @@ spec:
     spec:
       containers:
         - name: nignx
-#          image: nginx
-          image: bitnami/nginx:latest
+          image: nginxinc/nginx-unprivileged
           ports:
             - containerPort: 8080
           securityContext:

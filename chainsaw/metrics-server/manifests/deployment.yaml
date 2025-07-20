@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: nignx
-          image: bitnami/nginx:latest
+          image: nginxinc/nginx-unprivileged
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000

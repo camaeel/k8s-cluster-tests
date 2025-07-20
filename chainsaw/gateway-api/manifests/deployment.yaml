@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   labels:
     app: gateway-api-test
   name: gateway-api-test
@@ -17,7 +16,7 @@ spec:
     spec:
       containers:
         - name: nignx
-          image: bitnami/nginx:latest
+          image: nginxinc/nginx-unprivileged
           ports:
             - containerPort: 8080
           securityContext:
