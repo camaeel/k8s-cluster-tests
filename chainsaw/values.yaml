@@ -1,6 +1,6 @@
 gatewayApiTest:
-  gatewayName: kong
-  gatewayNamespace: kong
+  gatewayName: eg
+  gatewayNamespace: envoy-gateway-system
 certManagerTest:
   apiTokenSecretRef:
     key: api-token

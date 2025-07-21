@@ -45,8 +45,6 @@ spec:
                         type: Accepted
                       - status: "True"
                         type: ResolvedRefs
-                      - status: "True"
-                        type: Programmed
 
         - script:
             timeout: 3m
