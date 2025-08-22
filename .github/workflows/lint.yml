@@ -21,7 +21,7 @@ jobs:
     name: Lint chainsaw config
     steps:
       - name: Install Chainsaw
-        uses: kyverno/action-install-chainsaw@v0.2.12
+        uses: kyverno/action-install-chainsaw@v0.2.13
       - name: Check install
         run: chainsaw version
       - name: checkout code
